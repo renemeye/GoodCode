@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Halbwegs ordentlicher Code</title>
+
+		<meta name="description" content="Blamiert euch nicht ;)">
+		<meta name="author" content="René Meye">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/serif.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+		<div id="ovguLogo" style="position: absolute; left: 10px; top: 10px;">
+			<img src="logo.png"  width="350px">
+		</div>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+				<section>
+					<h3>Software Engineering</h3>
+					<h1>Guter Code</h1>
+					<p>oder auch ... blamiert euch nicht unnötig</p>
+					<p>
+						<small>Gastvortrag von <a href="http://rene-meye.de">René Meye</a> / <a href="http://twitter.com/Meye_R">@Meye_R</a></small>
+					</p>
+					</section>
+				<section data-markdown><script type="text/template">
+							Gäste
+							-----
+							#### Bitte salutieren
+
+							* General Purpose
+							* Major Concern
+							* Kernel Panic
+							* Private Static
+
+				</script></section>
+
+
+				</section>
+
+
+				<section data-markdown data-state="alert"><script type="text/template">
+					######Schlechter Code
+					```java
+int num[] = new int[5];
+System.out.println("Ein:");
+Scanner sc = new Scanner(System.in);
+for(int p = 0; p<5; p++)
+	num[p] = sc.nextInt();
+int j;
+boolean flag = true; // set flag to true
+int temp; // holding variable
+while (flag) {
+	flag = false; // set flag to false awaiting a possible swap
+	for (j = 0; j < num.length - 1; j++) {
+		if (num[j] < num[j + 1]) // change to > for ascending sort
+		{
+			temp = num[j]; // swap elements
+			num[j] = num[j + 1];
+			num[j + 1] = temp;
+			flag = true; // shows a swap occurred
+		}
+	}
+}
+int z=0;
+for(int t = 0; t<5; t++)
+	z += num[t];
+System.out.println("Erg:"+z/5.0);
+					```
+				</script></section>
+
+				<section data-markdown data-state="soothe"><script type="text/template">
+					######Besserer Code
+					```java
+private static final int ARRAY_LENGTH = 5;
+
+public static void main(String[] args) {
+	int arrayOfIntegerValues[] = new int[ARRAY_LENGTH];
+	askUserForInput(arrayOfIntegerValues);
+
+	sortWithBubbleSort(arrayOfIntegerValues);
+	double meanValue = calculateMeanValue(arrayOfIntegerValues);
+
+	printResultToConsole(meanValue);
+}
+
+private static void printResultToConsole(double result) {
+	System.out.println("The mean Value is:"+result);
+}
+
+private static double calculateMeanValue(int[] allValues) {
+	int sum = calculateSumOfValues(allValues);
+	return sum/(double)allValues.length;
+}
+
+private static int calculateSumOfValues(int[] valuesToSum) {
+	int sum=0;
+	for(int arrayCounter = 0; arrayCounter<valuesToSum.length; arrayCounter++)
+		sum += valuesToSum[arrayCounter];
+	return sum;
+}
+
+private static void sortWithBubbleSort(int[] arrayToSortOn) {
+	int positionnOnArray;
+	boolean hasSwaped = false;
+	int temporary;
+	while (!hasSwaped) {
+		hasSwaped = true; 
+		for (positionnOnArray = 0; positionnOnArray < arrayToSortOn.length - 1; positionnOnArray++) {
+			if (arrayToSortOn[positionnOnArray] < arrayToSortOn[positionnOnArray + 1])
+			{
+				temporary = arrayToSortOn[positionnOnArray]; 
+				arrayToSortOn[positionnOnArray] = arrayToSortOn[positionnOnArray + 1];
+				arrayToSortOn[positionnOnArray + 1] = temporary;
+				hasSwaped = false; // shows a swap occurred
+			}
+		}
+	}
+}
+
+private static void askUserForInput(int[] valueStorage) {
+	System.out.println("Pleas enter some Values:");
+	Scanner consoleReader = new Scanner(System.in);
+	for(int inputNr = 0; inputNr<valueStorage.length; inputNr++)
+		valueStorage[inputNr] = consoleReader.nextInt();
+}
+					```
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					Inhalt
+					------
+					* Notationen
+					* beschreibende Variablennamen
+					* beschreibende Funktionsnamen
+					* Kommentare
+					* Refactoring und Code-Rettung
+				</script></section>
+
+				<section data-markdown><script type="text/template">
+					Lernziele
+					---------
+					* Einfaches Handwerkszeug anwenden können
+					* Refactoring nutzen können
+					* Code schreiben können, der euch nicht vollends blamiert
+				</script></section>
+
+
+
+				<section>
+					<section data-markdown><script type="text/template">
+						Notationen
+						----------
+
+						```java
+						int ínt = 5;
+						```
+
+						```java
+						int sobitteauchnichtdaskanndochkeinerlesen = 5;
+						```
+
+						```java
+						int _ = 5;
+						int __ = 8;
+						int _$__ = _ - ___;
+						```
+
+						(Fürs Protokoll: Das sind NEGATIV Beispiele!)
+
+
+					</script></section>
+
+					<section data-markdown><script type="text/template">
+						CamelCaseNotation
+						-----------------
+						* Worte verbunden mit großen Zeichen
+						* Üblich bei: Variablen, Funktionen, Klassennamen...
+						* zu Deutsch: <q>"Binnenmajunkel"</q>
+						* Erster Buchstabe groß oder klein
+
+						```java
+							String einBeispiel = "Test";
+
+							int verschiedeneWorteGetrenntDurchEinGroßesZeichenAmAnfang;
+
+							StringWithExtensions test = "Foo Bar";
+						```
+
+					</script></section>
+					<section data-markdown><script type="text/template">
+						UPPER_CASE Notation
+						-------------------
+						* Worte getrennt durch Unterstrich 
+						* Üblich für Konstanten
+
+						```java
+						final int FIXED_ARRAY_LENGHT = 42;
+
+						final String RANDOM_HASH = "Deine Mudda!";
+						```
+
+					</script></section>
+					<section data-markdown><script type="text/template">
+						lower_case Notation
+						-------------------
+						* Worte getrennt durch Unterstrich 
+						* häufig auch zusammen geschrieben
+						* Üblich für packagenames
+
+						```java
+						package de.ovgu.iti.softwareengineering;
+
+						package de.ovgu.iti.software_engineering;
+						```
+
+					</script></section>
+
+					<section data-markdown><script type="text/template">
+						Ungarische Notation
+						-------------------
+
+						* Apps Hungarian
+						```CPP
+						mpchgr
+						```
+						(<q cite="http://de.wikipedia.org/wiki/Ungarische_Notation">Array, dessen Elemente Klassen sind und von positiven Bytes indiziert wird.</q>)
+
+						* Systems Hungarian
+						```CPP
+						String m_szLastName;
+						```
+						(Eine Member-Variable eines null-terminierten Strings.)
+
+					</script></section>
+					 <section data-markdown><script type="text/template">
+						Ungarische Notation
+						-------------------
+						A wise man:
+						<blockquote cite="http://thc.org/root/phun/unmaintain.html">
+							"Hungarian Notation is the tactical nuclear weapon of source code obfuscation techniques; use it!"
+						</blockquote>
+
+						* Ungarische Notation wird heute ungerne gesehen.
+						* Echtes Beispiel:
+						```CPP
+						a_crszkvc30LastNameCol
+						````
+
+					</script></section>
+
+
+				</section>
+
+				<section>
+				<section>
+					<h2>beschVaNa</h2>
+					<blockquote>"Variablen sind keine Hunde!"</blockquote>
+				</section>
+				<section data-markdown><script type="text/template">
+					Beschreibende Variablen Namen
+					---------------------------
+					* Variablennamen sollten immer ihren Inhalt beschreiben.
+					* kein einbuchstabigen Variablen
+					* keine Abkürzungen
+					* Faul sein: Tippen übernimmt die IDE
+
+					```java
+					foo[p] = sc.nextInt();
+
+					// versus
+
+					valuesFromUser[inputIndex] = consoleReader.nextInt();
+					```
+				</script></section>
+
+				</section>
+
+
+				<section>
+					<section>
+						<h2>Funktionen</h2>
+						<blockquote>
+							"Denk ab sieben Zeilen nochmal drüber nach!"
+						</blockquote>
+					</section>
+					<section data-markdown><script type="text/template">
+						####Tour de france 
+						####Programmierung
+
+						```java
+if(a == b){
+	if(x==z){
+			do something();
+		}
+		if(c == 0){
+			while (flag) {
+				flag = false; 
+				for (j = 0; j < num.length - 1; j++) {
+					if (num[j] < num[j + 1]){
+						doAnything();
+					}
+				}
+			}
+			if(b == x){
+				while (flag) {
+					flag = false; 
+					for (j = 0; j < num.length - 1; j++) {
+						if (num[j] < num[j + 1])
+						{
+							doAnything();
+						}
+					}
+				}
+			}
+			while (en.hasMoreElements()) {
+				type type = (type) en.nextElement();
+				for (int i = 0; i < args.length; i++) {
+					if(a == b){
+						if(x==z){
+							do something();
+						}
+						if(c == 0){
+							while (flag) {
+								flag = false; 
+								for (j = 0; j < num.length - 1; j++) {
+									if (num[j] < num[j + 1])
+									{
+										doAnything();
+									}
+								}
+							}
+							if(b == x){
+								while (flag) {
+									flag = false; 
+									for (j = 0; j < num.length - 1; j++) {
+										if (num[j] < num[j + 1])
+										{
+											doAnything();
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+						```
+
+					</script></section>
+
+        	<section data-markdown><script type="text/template">
+						Funktionen
+						----------
+						* Daumenregel: höchstens sieben Zeilen
+						* Aufteilen in Teilschritte
+							* in eigene Funktionen auslagern
+						* Beschreibende Funktionsnamen
+							* Alles was die Funktion tut
+
+					</script></section>
+
+        	<section>
+<pre><code data-trim contenteditable class="meye-short">
+
+int num[] = new int[5];
+System.out.println("Ein:");
+Scanner sc = new Scanner(System.in);
+for(int p = 0; p<5; p++)
+	num[p] = sc.nextInt();
+int j;
+boolean flag = true; // set flag to true
+int temp; // holding variable
+while (flag) {
+	flag = false; // set flag to false awaiting a possible swap
+	for (j = 0; j < num.length - 1; j++) {
+		if (num[j] < num[j + 1]) // change to > for ascending sort
+		{
+			temp = num[j]; // swap elements
+			num[j] = num[j + 1];
+			num[j + 1] = temp;
+			flag = true; // shows a swap occurred
+		}
+	}
+}
+int z=0;
+for(int t = 0; t<5; t++)
+	z += num[t];
+System.out.println("Erg:"+z/5.0);
+</code></pre>
+versus
+<pre><code data-trim contenteditable>
+public static void main(String[] args) {
+    int arrayOfIntegerValues[] = new int[ARRAY_LENGTH];
+    askUserForInput(arrayOfIntegerValues);
+
+    sortWithBubbleSort(arrayOfIntegerValues);
+    double meanValue = calculateMeanValue(arrayOfIntegerValues);
+
+    printResultToConsole(meanValue);
+}
+</code></pre>
+
+        	</section>
+
+
+				</section>
+
+				<section>
+					<section>
+						<h2>Kommentare</h2>
+						<blockquote>
+							"Guter Code darf keine Kommentare brauchen."
+						</blockquote>
+					</section>
+					<section data-markdown><script type="text/template">
+						Kommentare
+						----------
+						* Guter Code:
+							* Beschreibende Variablennamen
+							* Beschreibende Funktionsnamen
+							* Einheitliche Notation
+							* Einzelschritte in eigene Funktionen ausgelagert
+							* <q>"Guter Code darf keine Kommentare brauchen."</q>
+        	</script></section>
+					<section data-markdown><script type="text/template">
+						Kommentare
+						----------
+						* Guter Code soll trozdem Kommentare beinhalten:
+
+```JAVA
+/**
+  * @param front will be the first part 
+  * @param middlepart will be the second part
+  * @param end will be the last part
+  * @return A concatenated String for the three params
+  */
+public static String concatenate(String front,String middlepart,String end){
+   ...
+}
+
+/**
+  * @version 4.2  M&auml;rz 2013
+  * @author René Meye.
+	* This class proviedes some additional mathematical functions.
+  */
+public class Mathematics {
+...
+}
+```
+        	</script></section>
+
+        	<section data-markdown><script type="text/template">
+					Kommentare
+					--------------------------------
+					* können schädlich sein	
+						* Verrutschter Kommentar
+						```JAVA
+							//STEP 1: Sort all Elements
+							test[0] = null;
+
+							Array.sort(test);
+						```
+						* Verwirrender Kommentar
+					```JAVA
+						int config = 2231832; //RIPJWvG
+					```
+
+					viele Weitere:
+						[Stackoverflow - best comment in source code](http://stackoverflow.com/questions/184618/what-is-the-best-comment-in-source-code-you-have-ever-encountered)
+
+        	</script></section>
+
+
+				</section>
+				<section>
+
+					<section>
+						<h2>Code Conventions</h2>
+						<img src="goto.png" width="100%"/>
+
+					</section>
+
+					<section data-markdown><script type="text/template">
+						Code-Conventions
+						----------------
+						* Regel wie Code zu schreiben ist
+						* Werden bei Bewerbungen überprüft
+						* Wird vorgegeben
+						* Beispiel: 
+							* [Java-Code-Conventions](http://www.oracle.com/technetwork/java/codeconv-138413.html)
+						* In fast allen Programmiersprachen verfügbar
+        	</script></section>
+
+					<section data-markdown><script type="text/template">
+						Java-Code-Conventions
+						---------------------
+						* File Names
+						* File Organization
+						* [Indentation](http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-136091.html#262)
+						* Comments
+						* [Declarations](http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-141270.html#2991)
+						* Statements
+						* White Space
+						* [Naming Conventions](http://www.oracle.com/technetwork/java/javase/documentation/codeconventions-135099.html#367)
+						* ...
+        	</script></section>
+
+				</section>
+				<section>
+					<h1>Live Session</h1>
+					<img src="matras.jpg"/>
+				</section>
+				
+				<section data-markdown><script type="text/template">
+					Mögliche Klausurfragen:
+					-----------------------
+					* Was bedeutet <q cite="foo">"Variablen sind keine Hunde"</q>?
+					* Wie beurteilst du die folgende Aussage: <q cite="bar">Guter Code darf keine Kommentare brauchen.</q>
+					* Warum sind die Variablen im folgenden schlecht beannt? Wie könnte man es besser machen?
+
+					```java
+						Imagine there = (would) be.someOtherCode.here(); 
+					```
+				</script></section>
+
+
+
+				<section data-markdown><script type="text/template">
+					Literatur
+					---------------------
+					* McConnell S.: Code Complete. Microsoft Press 1993.
+					* [How to write unmaintainable Code](http://thc.org/root/phun/unmaintain.html)
+					* [Java-Code-Conventions](http://www.oracle.com/technetwork/java/codeconv-138413.html)
+					* Wikipedia rulez
+					* [Reveal.js - Framework für diese Folien](https://github.com/hakimel/reveal.js)
+					* [xkcd - goto](http://xkcd.com/292/)
+					* [Tipp zum Folgen: @statuscode](https://twitter.com/statuscode)
+
+				</script></section>
+
+
+				<section data-markdown><script type="text/template">
+					####Abschlusstipp: 
+					Zeigt nicht jedem was ihr könnt
+					---------------------------------------------
+					```CPP
+					#define fucking unsigned
+					...
+					return *this << (fucking long) value; 
+					```
+
+					```CPP
+					int fueftesElement = 5[ptr];
+					```
+
+					
+				</script></section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>Danke für eure Aufmerksamkeit</h3>
+				</section>
+
+
+				<section id="transitions">
+					<h2>Transition Styles</h2>
+					<p>
+						You can select from different transitions, like: <br>
+						<a href="?transition=cube#/transitions">Cube</a> -
+						<a href="?transition=page#/transitions">Page</a> -
+						<a href="?transition=concave#/transitions">Concave</a> -
+						<a href="?transition=zoom#/transitions">Zoom</a> -
+						<a href="?transition=linear#/transitions">Linear</a> -
+						<a href="?transition=fade#/transitions">Fade</a> -
+						<a href="?transition=none#/transitions">None</a> -
+						<a href="?#/transitions">Default</a>
+					</p>
+				</section>
+
+				<section id="themes">
+					<h2>Themes</h2>
+					<p>
+						Reveal.js comes with a few themes built in: <br>
+						<a href="?theme=sky#/themes">Sky</a> -
+						<a href="?theme=beige#/themes">Beige</a> -
+						<a href="?theme=simple#/themes">Simple</a> -
+						<a href="?theme=serif#/themes">Serif</a> -
+						<a href="?theme=night#/themes">Night</a> -
+						<a href="?#/themes">Default</a>
+					</p>
+					<p>
+						<small>
+							* Theme demos are loaded after the presentation which leads to flicker. In production you should load your theme in the <code>&lt;head&gt;</code> using a <code>&lt;link&gt;</code>.
+						</small>
+					</p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme || 'serif', // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'concave', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
